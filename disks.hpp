@@ -111,10 +111,15 @@ public:
 
   // Return true when this disk_state is fully sorted, with all light disks on
   // the left (low indices) and all dark disks on the right (high indices).
-  bool is_sorted() const {
-      
-      return true;
-  }
+    bool is_sorted() const {
+        for (size_t i = 0; i < total_count() - 1; i++) {
+            if (_colors[i] == DISK_DARK && _colors[i + 1] == DISK_LIGHT) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 };
 
 // Data structure for the output of the alternating disks problem. That
@@ -143,19 +148,44 @@ public:
 };
 
 // Algorithm that sorts disks using the alternate algorithm.
+// Write code for this function, including rewriting the return
+// statement, and then delete these comments.
 sorted_disks sort_alternate(const disk_state& before) {
-	int numOfSwap = 0;                                                                      //record # of step swap
- 
-          }
 
-  return sorted_disks(disk_state(state), numOfSwap);
+	
+	disk_state temp = before;
+	int swapCount = 0;
+
+	for (size_t i = 0; i < temp.light_count(); ++i) {
+		for (size_t j = 0; j < temp.total_count() - 1; ++j) {
+			if (temp.get(j) > temp.get(j + 1)) {
+				temp.swap(j);
+				++swapCount;
+			}
+		}
+	}
+
+	return sorted_disks(disk_state(temp), swapCount);
 }
 
 
 // Algorithm that sorts disks using the lawnmower algorithm.
+// Write code for this function, including rewriting the return
+// statement, and then delete these comments.
 sorted_disks sort_lawnmower(const disk_state& before) {
-  	
-	  }
 
-  return sorted_disks(disk_state(state), numOfSwap);
+	disk_state temp = before;
+	int swapCount = 0;
+	bool isIncrementing;
+
+	for (size_t i = 0; i < temp.light_count(); ++i) {
+		isIncrementing = (i % 2 == 0)? true : false; 
+		for (size_t j = isIncrementing? 0 : temp.total_count() - 2; j < temp.total_count() - 1; isIncrementing? ++j : --j) {
+			if (temp.get(j) > temp.get(j + 1)) {
+				temp.swap(j);
+				++swapCount;
+			}
+		}
+	}
+	return sorted_disks(disk_state(temp), swapCount);
 }
